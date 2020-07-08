@@ -23,6 +23,8 @@ namespace AdvancedCSharpCore
         }
         public IEnumerable<FileSystemInfo> GetAll()
         {
+            if (!Directory.Exists(_rootPath))
+                throw new ArgumentNullException("Root directory not exists");
             Start?.Invoke();
             try
             {
@@ -52,10 +54,10 @@ namespace AdvancedCSharpCore
         }
         public IEnumerable<FileSystemInfo> GetFiltered(bool isEnableFiltered = true)
         {
-            if (_filter == null)
-            {
-                throw new ArgumentNullException("Filter not instatiate");
-            }
+            if (_rootPath == null)
+                throw new ArgumentNullException("Root path must be not Null");
+            if (!Directory.Exists(_rootPath))
+                throw new ArgumentNullException($"Root directory not exists in {_rootPath}");
             Start?.Invoke();
             try
             {
@@ -68,14 +70,14 @@ namespace AdvancedCSharpCore
                     }
                     if (isEnableFiltered)
                     {
-                        if (_filter(item))
+                        if (_filter?.Invoke(item) ?? false)
                         {
                             yield return ChackFileSystemInfo(item);
                         }
                     }
                     else
                     {
-                        if (!_filter(item))
+                        if (!_filter?.Invoke(item) ?? false)
                         {
                             yield return item;
                         }
@@ -103,7 +105,7 @@ namespace AdvancedCSharpCore
         {
             foreach (var dir in GetDirectories(rootPath))
             {
-               yield return dir;
+                yield return dir;
             }
             foreach (var file in GetFiles(rootPath))
             {
