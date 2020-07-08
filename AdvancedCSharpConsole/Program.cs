@@ -18,7 +18,8 @@ namespace AdvancedCSharpConsole
             string pathDir = config["rootPath"];
             FileSystemVisitor visitor = new FileSystemVisitor(pathDir, filter: x => x.Name.Contains("docx"));
             Subscribe(visitor);
-            visitor.StopVisitor(item => item.Name.Contains("docx"));
+            //set case when visitor was stoped
+            //visitor.StopVisitor(item => item.Name.Contains("docx"));
             ShowElements("All system elements (files and folders)", visitor.GetAll());
             ShowElements("(Un)Filetered (files and forders)", visitor.GetFiltered());
         }
