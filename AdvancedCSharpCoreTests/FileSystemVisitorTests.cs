@@ -21,13 +21,13 @@ namespace AdvancedCSharpCoreTests
         {
             _rootPath = null;
             var ex = Record.Exception(() => visitor.GetAll(_rootPath));
-            Assert.IsType<ArgumentNullException>(ex);
+            Assert.IsType<Exception>(ex);
         }
         [Fact]
         public void GetAll_Root_Pass_not_exists_or_empty_shoud_throw_ArgumentNullExeption()
         {
             _rootPath = "";
-            Assert.Throws<ArgumentNullException>(() => visitor.GetAll(_rootPath));
+            Assert.Throws(typeof(Exception),() => visitor.GetAll(_rootPath));
         }
         [Fact]
         public void GetAll_predicate_to_stop_valid_shoud_return_first_found_item_and_stop()

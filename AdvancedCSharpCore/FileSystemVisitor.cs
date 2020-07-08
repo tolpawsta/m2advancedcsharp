@@ -23,7 +23,7 @@ namespace AdvancedCSharpCore
         {
             if (rootPath == null || !Directory.Exists(rootPath))
             {
-                throw new ArgumentNullException();
+                throw new Exception();
             }
             Start?.Invoke();
             try
