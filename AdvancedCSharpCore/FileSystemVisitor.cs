@@ -23,7 +23,7 @@ namespace AdvancedCSharpCore
         {
             if (rootPath == null || !Directory.Exists(rootPath))
             {
-                throw new Exception();
+                throw new ArgumentException(nameof(rootPath));
             }
             Start?.Invoke();
             try
@@ -54,31 +54,31 @@ namespace AdvancedCSharpCore
         public IEnumerable<FileSystemInfo> GetFiltered(string rootPath,bool isEnableFiltered = true)
         {
             if (rootPath == null)
-                throw new ArgumentNullException("Root path must be not Null");
+                throw new ArgumentNullException($"Root path must be not Null {nameof(rootPath)}");
             if (!Directory.Exists(rootPath))
-                throw new ArgumentNullException($"Root directory not exists in {rootPath}");
+                throw new ArgumentException($"Root directory not exists in {nameof(rootPath)}");
             Start?.Invoke();
             try
             {
                 foreach (var item in GetSystemElements(rootPath))
                 {
-                    if (_predicate?.Invoke(item) ?? false)
+                    if (_filter?.Invoke(item) ?? false)
                     {
-                        yield return item;
-                        yield break;
-                    }
-                    if (isEnableFiltered)
-                    {
-                        if (_filter?.Invoke(item) ?? false)
-                        {
-                            yield return ChackFileSystemInfo(item);
-                        }
-                    }
-                    else
-                    {
-                        if (!_filter?.Invoke(item) ?? false)
+                        if (_predicate?.Invoke(item) ?? false)
                         {
                             yield return item;
+                            yield break;
+                        }
+                        if (isEnableFiltered)
+                        {                            
+                          yield return ChackFileSystemInfo(item);                           
+                        }
+                        else
+                        {
+                            if (!_filter?.Invoke(item) ?? false)
+                            {
+                                yield return item;
+                            }
                         }
                     }
                 }

@@ -16,7 +16,7 @@ namespace AdvancedCSharpConsole
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
             string pathDir = config["rootPath"];
-            FileSystemVisitor visitor = new FileSystemVisitor();
+            FileSystemVisitor visitor = new FileSystemVisitor(item => item.Name.Contains("docx"));
             Subscribe(visitor);
             //set case when visitor was stoped
             visitor.StopVisitor(item => item.Name.Contains("docx"));
