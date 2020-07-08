@@ -16,12 +16,12 @@ namespace AdvancedCSharpConsole
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
             string pathDir = config["rootPath"];
-            FileSystemVisitor visitor = new FileSystemVisitor(pathDir, filter: x => x.Name.Contains("docx"));
+            FileSystemVisitor visitor = new FileSystemVisitor();
             Subscribe(visitor);
             //set case when visitor was stoped
-            //visitor.StopVisitor(item => item.Name.Contains("docx"));
-            ShowElements("All system elements (files and folders)", visitor.GetAll());
-            ShowElements("(Un)Filetered (files and forders)", visitor.GetFiltered());
+            visitor.StopVisitor(item => item.Name.Contains("docx"));
+            ShowElements("All system elements (files and folders)", visitor.GetAll(pathDir));
+            ShowElements("(Un)Filetered (files and forders)", visitor.GetFiltered(pathDir));
         }
 
         private static void ShowElements(string message, IEnumerable<FileSystemInfo> elements)

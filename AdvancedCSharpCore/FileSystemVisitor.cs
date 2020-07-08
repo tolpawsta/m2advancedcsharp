@@ -7,7 +7,6 @@ namespace AdvancedCSharpCore
 {
     public class FileSystemVisitor
     {
-        private readonly string _rootPath;
         private Predicate<FileSystemInfo> _filter;
         private Predicate<FileSystemInfo> _predicate;
         public event Action Start;
@@ -16,19 +15,20 @@ namespace AdvancedCSharpCore
         public event EventHandler<FileSystemVisitorEventArgs> DirectoryFinded;
         public event EventHandler<FileSystemVisitorEventArgs> FilterFileFinded;
         public event EventHandler<FileSystemVisitorEventArgs> FilterDirectoryFinded;
-        public FileSystemVisitor(string rootPath, Predicate<FileSystemInfo> filter = null)
-        {
-            _rootPath = rootPath;
+        public FileSystemVisitor(Predicate<FileSystemInfo> filter = null)
+        {            
             _filter = filter;
         }
-        public IEnumerable<FileSystemInfo> GetAll()
+        public IEnumerable<FileSystemInfo> GetAll(string rootPath)
         {
-            if (!Directory.Exists(_rootPath))
-                throw new ArgumentNullException("Root directory not exists");
+            if (rootPath == null || !Directory.Exists(rootPath))
+            {
+                throw new ArgumentNullException();
+            }
             Start?.Invoke();
             try
             {
-                foreach (var item in GetSystemElements(_rootPath))
+                foreach (var item in GetSystemElements(rootPath))
                 {
                     if (_predicate?.Invoke(item) ?? false)
                     {
@@ -49,19 +49,18 @@ namespace AdvancedCSharpCore
             finally
             {
                 Stop?.Invoke();
-            }
-
+            }           
         }
-        public IEnumerable<FileSystemInfo> GetFiltered(bool isEnableFiltered = true)
+        public IEnumerable<FileSystemInfo> GetFiltered(string rootPath,bool isEnableFiltered = true)
         {
-            if (_rootPath == null)
+            if (rootPath == null)
                 throw new ArgumentNullException("Root path must be not Null");
-            if (!Directory.Exists(_rootPath))
-                throw new ArgumentNullException($"Root directory not exists in {_rootPath}");
+            if (!Directory.Exists(rootPath))
+                throw new ArgumentNullException($"Root directory not exists in {rootPath}");
             Start?.Invoke();
             try
             {
-                foreach (var item in GetSystemElements(_rootPath))
+                foreach (var item in GetSystemElements(rootPath))
                 {
                     if (_predicate?.Invoke(item) ?? false)
                     {
